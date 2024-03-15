@@ -11,7 +11,7 @@ class Company(models.Model):
 
 # Employee manager
 class EmployeeManager(BaseUserManager):
-    def create_employee(self, company, email, name, password=None, password2=None):
+    def create_employee(self, email, name, company, password=None, password2=None):
         if not email:
             raise ValueError("Employees must have an email address")
 
@@ -23,6 +23,14 @@ class EmployeeManager(BaseUserManager):
         employee.save(using=self._db)
         return employee
 
+    def create_superuser(self, email, name, password=None):
+        employee = self.create_employee(
+            email, password=password, name=name, company=None
+        )
+        employee.is_admin = True
+        employee.save(using=self._db)
+        return employee
+
 
 class Employee(AbstractBaseUser):
     email = models.EmailField(
@@ -31,7 +39,9 @@ class Employee(AbstractBaseUser):
         unique=True,
     )
     name = models.CharField(max_length=200)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, blank=True, null=True
+    )
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     upddated_at = models.DateTimeField(auto_now=True)
@@ -39,7 +49,7 @@ class Employee(AbstractBaseUser):
     object = EmployeeManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name", "is_admin"]
+    REQUIRED_FIELDS = ["name"]
 
     def __str__(self):
         return self.email

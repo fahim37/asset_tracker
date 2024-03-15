@@ -4,13 +4,10 @@ from account.models import Employee, Company
 
 class EmployeeRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
-    company = serializers.PrimaryKeyRelatedField(
-        queryset=Company.objects.all(), write_only=True
-    )
 
     class Meta:
         model = Employee
-        fields = ["company", "email", "name", "password", "password2"]
+        fields = ["email", "name", "password", "password2"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate(self, attrs):
@@ -23,12 +20,21 @@ class EmployeeRegistrationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        company = validated_data.pop("company")
-        return Employee.object.create_employee(company=company, **validated_data)
+        if self.request.user.is_authenticated:
+            company = self.request.user.company
+            employee = Employee.object.create_employee(
+                company=company, **validated_data
+            )
+            user = self.context["request"].user
+            company = user.company
+            Employee.object.create_employee(company=company, **validated_data)
+            return employee
+
+        return super().create(validated_data)
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    employee = EmployeeRegistrationSerializer()
+    employee = EmployeeRegistrationSerializer(write_only=True)
 
     class Meta:
         model = Company
@@ -36,7 +42,8 @@ class CompanySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         employee_data = validated_data.pop("employee")
-        company = Company.objects.create(**validated_data)
+        company = Company.objects.create(validated_data)
+        Employee.object.create_employee(company=company, **employee_data)
         return company
 
 
