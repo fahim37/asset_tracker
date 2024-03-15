@@ -82,8 +82,8 @@ class CompanyCreateView(APIView):
             employee_data = request.data.get("employee", None)
             if employee_data:
                 employee_data["company"] = (
-                    company.id
-                )  # Associate employee with the newly created company
+                    company.id  # Associate employee with the newly created company
+                )
                 employee_serializer = EmployeeRegistrationSerializer(data=employee_data)
                 if employee_serializer.is_valid():
                     employee_serializer.save()

@@ -4,7 +4,9 @@ from account.models import Employee, Company
 
 class EmployeeRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
-    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
+    company = serializers.PrimaryKeyRelatedField(
+        queryset=Company.objects.all(), write_only=True
+    )
 
     class Meta:
         model = Employee
