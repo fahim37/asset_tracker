@@ -27,7 +27,9 @@ class EmployeeRegistrationView(APIView):
     renderer_classes = [EmployeeRenderer]
 
     def post(self, request, format=None):
-        serializer = EmployeeRegistrationSerializer(data=request.data)
+        serializer = EmployeeRegistrationSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid(raise_exception=True):
             employee = serializer.save()
             token = get_tokens_for_employee(employee)
@@ -69,7 +71,7 @@ class EmployeeProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        serializer = EmployeeProfileSerializer(request.employee)
+        serializer = EmployeeProfileSerializer(request.user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 

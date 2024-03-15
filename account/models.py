@@ -46,7 +46,7 @@ class Employee(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     upddated_at = models.DateTimeField(auto_now=True)
 
-    object = EmployeeManager()
+    objects = EmployeeManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name"]
