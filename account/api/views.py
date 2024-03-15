@@ -79,6 +79,7 @@ class CompanyCreateView(APIView):
         company_serializer = CompanySerializer(data=request.data)
         if company_serializer.is_valid():
             company = company_serializer.save()
+
             employee_data = request.data.get("employee", None)
             if employee_data:
                 employee_data["company"] = (

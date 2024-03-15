@@ -11,13 +11,12 @@ class Company(models.Model):
 
 # Employee manager
 class EmployeeManager(BaseUserManager):
-    def create_employee(self, email, name, password=None, password2=None):
+    def create_employee(self, company, email, name, password=None, password2=None):
         if not email:
             raise ValueError("Employees must have an email address")
 
         employee = self.model(
-            email=self.normalize_email(email),
-            name=name,
+            email=self.normalize_email(email), name=name, company=company
         )
 
         employee.set_password(password)

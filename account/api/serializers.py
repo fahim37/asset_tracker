@@ -27,6 +27,19 @@ class EmployeeRegistrationSerializer(serializers.ModelSerializer):
         return Employee.object.create_employee(company=company, **validated_data)
 
 
+class CompanySerializer(serializers.ModelSerializer):
+    employee = EmployeeRegistrationSerializer()
+
+    class Meta:
+        model = Company
+        fields = ("company_name", "employee")
+
+    def create(self, validated_data):
+        employee_data = validated_data.pop("employee")
+        company = Company.objects.create(**validated_data)
+        return company
+
+
 class EmployeeLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255)
 
@@ -39,17 +52,3 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = ["id", "email", "name"]
-
-
-class CompanySerializer(serializers.ModelSerializer):
-    employee = EmployeeRegistrationSerializer()
-
-    class Meta:
-        model = Company
-        fields = ("company_name", "employee")
-
-    def create(self, validated_data):
-        employee_data = validated_data.pop("employee")
-        company = Company.objects.create(**validated_data)
-        Employee.object.create_employee(company=company, **employee_data)
-        return company
