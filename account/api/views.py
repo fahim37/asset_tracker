@@ -7,6 +7,7 @@ from account.api.serializers import (
     EmployeeRegistrationSerializer,
     EmployeeLoginSerializer,
     EmployeeProfileSerializer,
+    CompanySerializer,
 )
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
@@ -31,7 +32,7 @@ class EmployeeRegistrationView(APIView):
             employee = serializer.save()
             token = get_tokens_for_employee(employee)
             return Response(
-                {"token": token, "msg": "Registration Successfull"},
+                {"token": token, "msg": "Registration Succ1essfull"},
                 status=status.HTTP_201_CREATED,
             )
 
@@ -71,3 +72,26 @@ class EmployeeProfileView(APIView):
         serializer = EmployeeProfileSerializer(request.employee)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CompanyCreateView(APIView):
+    def post(self, request):
+        company_serializer = CompanySerializer(data=request.data)
+        if company_serializer.is_valid():
+            company = company_serializer.save()
+            employee_data = request.data.get("employee", None)
+            if employee_data:
+                employee_data["company"] = (
+                    company.id
+                )  # Associate employee with the newly created company
+                employee_serializer = EmployeeRegistrationSerializer(data=employee_data)
+                if employee_serializer.is_valid():
+                    employee_serializer.save()
+                else:
+                    # If employee data is invalid, delete the created company and return error response
+                    company.delete()
+                    return Response(
+                        employee_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    )
+            return Response(company_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(company_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
