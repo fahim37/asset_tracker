@@ -43,8 +43,8 @@ class CompanySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         employee_data = validated_data.pop("employee")
-        company = Company.objects.create(validated_data)
-        Employee.objectscreate_employee(company=company, **employee_data)
+        company = Company.objects.create(**validated_data)
+        Employee.objects.create_employee(company=company, **employee_data)
         return company
 
 
