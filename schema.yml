@@ -1,0 +1,179 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /account/company/:
+    post:
+      operationId: account_company_create
+      tags:
+      - account
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /account/login/:
+    post:
+      operationId: account_login_create
+      tags:
+      - account
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /account/profile/:
+    get:
+      operationId: account_profile_retrieve
+      tags:
+      - account
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /account/register/:
+    post:
+      operationId: account_register_create
+      tags:
+      - account
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /device/:
+    get:
+      operationId: device_retrieve
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: device_create
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /device/{id}/:
+    get:
+      operationId: device_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: device_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: device_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /device/checkout/:
+    get:
+      operationId: device_checkout_retrieve
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: device_checkout_create
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /device/checkout/{id}/:
+    get:
+      operationId: device_checkout_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /device/checkout/return/{id}/:
+    post:
+      operationId: device_checkout_return_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

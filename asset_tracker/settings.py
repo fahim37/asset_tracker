@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "drf_spectacular",
     "account",
     "device",
 ]
@@ -134,10 +135,13 @@ AUTH_USER_MODEL = "account.Employee"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
+
+SPECTACULAR_SETTING = {"TITLE": "asset_tracker"}
