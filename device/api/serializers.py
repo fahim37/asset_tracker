@@ -12,3 +12,9 @@ class CheckoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Checkout
         fields = "__all__"
+
+
+class ReturnDeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Checkout
+        fields = ["checked_in_at", "condition_on_return"]

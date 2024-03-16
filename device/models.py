@@ -6,7 +6,6 @@ class Device(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     device_type = models.CharField(max_length=255)
     serial_number = models.CharField(max_length=255, unique=True)
-    condition_on_checkout = models.TextField(blank=True)
     checked_out = models.BooleanField(default=False)
 
     def __str__(self):
@@ -20,6 +19,7 @@ class Checkout(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     checked_out_at = models.DateTimeField(auto_now_add=True)
     checked_in_at = models.DateTimeField(blank=True, null=True)
+    condition_on_checkout = models.TextField(blank=True)
     condition_on_return = models.TextField(blank=True)
 
     def __str__(self):

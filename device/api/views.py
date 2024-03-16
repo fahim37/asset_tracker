@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from device.models import Device, Checkout
-from .serializers import DeviceSerializer, CheckoutSerializer
+from .serializers import DeviceSerializer, CheckoutSerializer, ReturnDeviceSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -84,3 +84,16 @@ class CheckoutDetailView(APIView):
         checkout = self.get_object(pk)
         checkout.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DeviceReturnView(APIView):
+    def post(self, request, pk):
+        checkout = get_object_or_404(Checkout, pk=pk)
+        serializer = ReturnDeviceSerializer(checkout, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # Update the checked_out field of the Device
+            checkout.device.checked_out = False
+            checkout.device.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
