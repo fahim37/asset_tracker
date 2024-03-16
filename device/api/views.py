@@ -4,6 +4,7 @@ from rest_framework import status
 from device.models import Device, Checkout
 from .serializers import DeviceSerializer, CheckoutSerializer, ReturnDeviceSerializer
 from django.shortcuts import get_object_or_404
+from datetime import datetime
 
 
 class DeviceListView(APIView):
@@ -85,7 +86,9 @@ class DeviceReturnView(APIView):
         checkout = get_object_or_404(Checkout, pk=pk)
         serializer = ReturnDeviceSerializer(checkout, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(
+                checked_in_at=datetime.now()
+            )  # Set checked_in_at to current datetime
             # Update the checked_out field of the Device
             checkout.device.checked_out = False
             checkout.device.save()
