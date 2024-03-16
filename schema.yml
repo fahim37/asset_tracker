@@ -13,7 +13,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+          description: ''
   /account/login/:
     post:
       operationId: account_login_create
@@ -24,7 +28,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeLogin'
+          description: ''
   /account/profile/:
     get:
       operationId: account_profile_retrieve
@@ -34,7 +42,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeProfile'
+          description: ''
   /account/register/:
     post:
       operationId: account_register_create
@@ -45,7 +57,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRegistration'
+          description: ''
   /api/schema/:
     get:
       operationId: api_schema_retrieve
@@ -201,7 +217,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ''
     post:
       operationId: device_create
       tags:
@@ -271,7 +291,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+          description: ''
     post:
       operationId: device_checkout_create
       tags:
@@ -298,7 +322,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+          description: ''
   /device/checkout/return/{id}/:
     post:
       operationId: device_checkout_return_create
@@ -315,8 +343,145 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnDevice'
+          description: ''
 components:
+  schemas:
+    Checkout:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        checked_out_at:
+          type: string
+          format: date-time
+          readOnly: true
+        checked_in_at:
+          type: string
+          format: date-time
+          nullable: true
+        condition_on_checkout:
+          type: string
+        condition_on_return:
+          type: string
+        device:
+          type: integer
+        employee:
+          type: integer
+      required:
+      - checked_out_at
+      - device
+      - employee
+      - id
+    Company:
+      type: object
+      properties:
+        company_name:
+          type: string
+          maxLength: 255
+        employee:
+          allOf:
+          - $ref: '#/components/schemas/EmployeeRegistration'
+          writeOnly: true
+      required:
+      - company_name
+      - employee
+    CompanyDetail:
+      type: object
+      properties:
+        company_name:
+          type: string
+      required:
+      - company_name
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        device_type:
+          type: string
+          maxLength: 255
+        serial_number:
+          type: string
+          maxLength: 255
+        checked_out:
+          type: boolean
+        company:
+          type: integer
+      required:
+      - company
+      - device_type
+      - id
+      - serial_number
+    EmployeeLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 128
+      required:
+      - email
+      - password
+    EmployeeProfile:
+      type: object
+      properties:
+        company:
+          $ref: '#/components/schemas/CompanyDetail'
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 200
+      required:
+      - company
+      - email
+      - id
+      - name
+    EmployeeRegistration:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 200
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        password2:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - name
+      - password
+      - password2
+    ReturnDevice:
+      type: object
+      properties:
+        checked_in_at:
+          type: string
+          format: date-time
+          nullable: true
+        condition_on_return:
+          type: string
   securitySchemes:
     jwtAuth:
       type: http

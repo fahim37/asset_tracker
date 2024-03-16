@@ -28,6 +28,7 @@ def get_tokens_for_employee(employee):
 class EmployeeRegistrationView(APIView):
     renderer_classes = [EmployeeRenderer]
 
+    @extend_schema(responses=EmployeeRegistrationSerializer)
     def post(self, request, format=None):
         serializer = EmployeeRegistrationSerializer(
             data=request.data, context={"request": request}
@@ -44,6 +45,7 @@ class EmployeeRegistrationView(APIView):
 class EmployeeLoginView(APIView):
     renderer_classes = [EmployeeRenderer]
 
+    @extend_schema(responses=EmployeeLoginSerializer)
     def post(self, request, format=None):
         serializer = EmployeeLoginSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -72,6 +74,7 @@ class EmployeeProfileView(APIView):
     renderer_classes = [EmployeeRenderer]
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses=EmployeeProfileSerializer)
     def get(self, request, format=None):
         serializer = EmployeeProfileSerializer(request.user)
 
@@ -79,6 +82,7 @@ class EmployeeProfileView(APIView):
 
 
 class CompanyCreateView(APIView):
+    @extend_schema(responses=CompanySerializer)
     def post(self, request):
         company_serializer = CompanySerializer(data=request.data)
         if company_serializer.is_valid():

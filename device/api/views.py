@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,6 +10,7 @@ from device.models import Device, Checkout
 
 
 class DeviceListView(APIView):
+    @extend_schema(responses=DeviceSerializer)
     def get(self, request):
         devices = Device.objects.all()
         serializer = DeviceSerializer(devices, many=True)
@@ -23,7 +25,7 @@ class DeviceListView(APIView):
 
 
 class DeviceDetailView(APIView):
-
+    @extend_schema(responses=DeviceSerializer)
     def get_object(self, pk):
         return get_object_or_404(Device, pk=pk)
 
@@ -47,6 +49,7 @@ class DeviceDetailView(APIView):
 
 
 class CheckoutListView(APIView):
+    @extend_schema(responses=CheckoutSerializer)
     def get(self, request):
         checkouts = Checkout.objects.all()
         serializer = CheckoutSerializer(checkouts, many=True)
@@ -76,6 +79,7 @@ class CheckoutDetailView(APIView):
     def get_object(self, pk):
         return get_object_or_404(Checkout, pk=pk)
 
+    @extend_schema(responses=CheckoutSerializer)
     def get(self, request, pk):
         checkout = self.get_object(pk)
         serializer = CheckoutSerializer(checkout)
@@ -83,6 +87,7 @@ class CheckoutDetailView(APIView):
 
 
 class DeviceReturnView(APIView):
+    @extend_schema(responses=ReturnDeviceSerializer)
     def post(self, request, pk):
         checkout = get_object_or_404(Checkout, pk=pk)
         serializer = ReturnDeviceSerializer(checkout, data=request.data)
