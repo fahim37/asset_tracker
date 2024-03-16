@@ -51,12 +51,19 @@ class CheckoutListView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        device_id = request.data.get("device")
+        device = get_object_or_404(Device, pk=device_id)
+
+        if device.checked_out:
+            return Response(
+                {"error": "Device is already checked out"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = CheckoutSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             # Update the checked_out field of the Device
-            device_id = request.data.get("device")
-            device = get_object_or_404(Device, pk=device_id)
             device.checked_out = True
             device.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -71,19 +78,6 @@ class CheckoutDetailView(APIView):
         checkout = self.get_object(pk)
         serializer = CheckoutSerializer(checkout)
         return Response(serializer.data)
-
-    def put(self, request, pk):
-        checkout = self.get_object(pk)
-        serializer = CheckoutSerializer(checkout, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        checkout = self.get_object(pk)
-        checkout.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DeviceReturnView(APIView):
