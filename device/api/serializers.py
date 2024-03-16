@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from device.models import Device, Checkout
 
 

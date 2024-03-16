@@ -1,10 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from device.models import Device, Checkout
-from .serializers import DeviceSerializer, CheckoutSerializer, ReturnDeviceSerializer
-from django.shortcuts import get_object_or_404
 from datetime import datetime
+
+from .serializers import DeviceSerializer, CheckoutSerializer, ReturnDeviceSerializer
+from device.models import Device, Checkout
 
 
 class DeviceListView(APIView):

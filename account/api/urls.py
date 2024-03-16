@@ -1,4 +1,5 @@
 from django.urls import path
+
 from account.api.views import (
     EmployeeRegistrationView,
     EmployeeLoginView,
